@@ -1,0 +1,131 @@
+#include "main.h"
+#include <unistd.h>
+
+int p_ptr(va_list a, char b[], int f, int w, int p, int s) {
+    char ec = 0, pd = ' ';
+    int i = BUFF_SIZE - 2, l = 2, ps = 1;
+    unsigned long na;
+    char mt[] = "0123456789abcdef";
+    void *a = va_arg(a, void *);
+
+    UNUSED(w);
+    UNUSED(s);
+
+    if (a == NULL)
+        return (write(1, "(nil)", 5);
+
+    b[BUFF_SIZE - 1] = '\0';
+    UNUSED(p);
+
+    na = (unsigned long)a;
+
+    while (na > 0) {
+        b[i--] = mt[na % 16];
+        na /= 16;
+        l++;
+    }
+
+    if ((f & F_ZERO) && !(f & F_MINUS))
+        pd = '0';
+    if (f & F_PLUS)
+        ec = '+', l++;
+    else if (f & F_SPACE)
+        ec = ' ', l++;
+
+    i++;
+
+    return (write_pointer(b, i, l, w, f, pd, ec, ps));
+}
+
+int p_np(va_list a, char b[], int f, int w, int p, int s) {
+    int i = 0, of = 0;
+    char *str = va_arg(a, char *);
+
+    UNUSED(f);
+    UNUSED(w);
+    UNUSED(p);
+    UNUSED(s);
+
+    if (str == NULL)
+        return (write(1, "(null)", 6);
+
+    while (str[i] != '\0') {
+        if (is_printable(str[i]))
+            b[i + of] = str[i];
+        else
+            of += append_hexa_code(str[i], b, i + of);
+        i++;
+    }
+
+    b[i + of] = '\0';
+
+    return (write(1, b, i + of));
+}
+
+int p_rv(va_list a, char b[], int f, int w, int p, int s) {
+    char *str;
+    int i, c = 0;
+
+    UNUSED(b);
+    UNUSED(f);
+    UNUSED(w);
+    UNUSED(s);
+
+    str = va_arg(a, char *);
+
+    if (str == NULL)
+    {
+        UNUSED(p);
+        str = ")Null(";
+    }
+    for (i = 0; str[i]; i++)
+        ;
+
+    for (i = i - 1; i >= 0; i--)
+    {
+        char z = str[i];
+        write(1, &z, 1);
+        c++;
+    }
+    return (c);
+}
+
+int p_r13s(va_list a, char b[], int f, int w, int p, int s) {
+    char x;
+    char *str;
+    unsigned int i, j;
+    int c = 0;
+    char in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    char out[] = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
+
+    str = va_arg(a, char *);
+    UNUSED(b);
+    UNUSED(f);
+    UNUSED(w);
+    UNUSED(p);
+    UNUSED(s);
+
+    if (str == NULL)
+        str = "(AHYY)";
+    for (i = 0; str[i]; i++)
+    {
+        for (j = 0; in[j]; j++)
+        {
+            if (in[j] == str[i])
+            {
+                x = out[j];
+                write(1, &x, 1);
+                c++;
+                break;
+            }
+        }
+        if (!in[j])
+        {
+            x = str[i];
+            write(1, &x, 1);
+            c++;
+        }
+    }
+    return (c);
+}
+

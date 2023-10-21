@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <stdarg.h>
+#include "main.h"
+#include <unistd.h>
 
 int _printf(const char *format, ...) {
     va_list args;
@@ -11,21 +11,21 @@ int _printf(const char *format, ...) {
             format++; // Move past '%'
             if (*format == 'c') {
                 int c = va_arg(args, int);
-                putchar(c);
+                write(1, &c, 1); // Write the character to stdout
                 chars_printed++;
             } else if (*format == 's') {
                 const char *str = va_arg(args, const char *);
                 while (*str) {
-                    putchar(*str);
+                    write(1, str, 1); // Write each character of the string to stdout
                     str++;
                     chars_printed++;
                 }
             } else if (*format == '%') {
-                putchar('%');
+                write(1, "%", 1); // Write '%' to stdout
                 chars_printed++;
             }
         } else {
-            putchar(*format);
+            write(1, format, 1); // Write the character to stdout
             chars_printed++;
         }
         format++;
@@ -35,8 +35,3 @@ int _printf(const char *format, ...) {
     return chars_printed;
 }
 
-int main() {
-    int num_chars = _printf("Hello, %s! My favorite character is %c. This is a %% sign: %%\n", "World", 'A');
-    printf("\nNumber of characters printed: %d\n", num_chars);
-    return 0;
-}
